@@ -526,10 +526,10 @@ app.layout = html.Div([
             html.Div([dcc.Graph(id="team-performance")], className="chart-container"),
         ], className="row row-2"),
         
-        html.Div([
-            html.Div([dcc.Graph(id="tickets-by-day")], className="chart-container"),
-            html.Div([dcc.Graph(id="tickets-by-hour")], className="chart-container"),
-        ], className="row row-2"),
+        # html.Div([
+        #     html.Div([dcc.Graph(id="tickets-by-day")], className="chart-container"),
+        #     html.Div([dcc.Graph(id="tickets-by-hour")], className="chart-container"),
+        # ], className="row row-2"),
         
         html.Div([
             html.Div([dcc.Graph(id="product-priority-heatmap")], className="chart-container"),
@@ -593,7 +593,7 @@ app.layout = html.Div([
                     page_size=20,
                     sort_action="native",
                     sort_mode="multi",
-                    filter_action="native",
+                    filter_action="none",
                     export_format="xlsx",
                     export_headers="display"
                 )
@@ -640,8 +640,8 @@ def style_chart(fig, title):
      Output("tickets-over-time", "figure"),
      Output("resolution-time-hist", "figure"),
      Output("team-performance", "figure"),
-     Output("tickets-by-day", "figure"),
-     Output("tickets-by-hour", "figure"),
+     #  Output("tickets-by-day", "figure"),
+     #  Output("tickets-by-hour", "figure"),
      Output("product-priority-heatmap", "figure"),
      Output("monthly-trends", "figure"),
      Output("data-table", "data")],
@@ -791,6 +791,7 @@ def update_dashboard(start_date, end_date, selected_products, selected_prioritie
     fig7 = style_chart(fig7, "Team Performance - Total Tickets")
     
     # 8. Tickets by Day of Week
+    """
     day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     day_counts = dff["DayOfWeek"].value_counts().reindex(day_order, fill_value=0)
     fig8 = px.bar(x=day_counts.index, y=day_counts.values,
@@ -803,7 +804,7 @@ def update_dashboard(start_date, end_date, selected_products, selected_prioritie
                    color_discrete_sequence=[COLORS['accent']])
     fig9 = style_chart(fig9, "Tickets by Hour of Day")
     fig9.update_traces(line=dict(width=3))
-    
+    """
     # 10. Product vs Priority Heatmap
     if len(dff) > 0:
         heatmap_data = pd.crosstab(dff["Product"], dff["Priority"])
@@ -829,7 +830,7 @@ def update_dashboard(start_date, end_date, selected_products, selected_prioritie
     fig11 = style_chart(fig11, "Monthly Ticket Trends by Product")
     
     return (kpi_total, kpi_closure, kpi_resolution, kpi_first_contact, kpi_reopen,
-            fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10, fig11, table_data)
+            fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig10, fig11, table_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
